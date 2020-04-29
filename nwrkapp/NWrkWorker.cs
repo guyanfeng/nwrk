@@ -29,7 +29,7 @@ namespace nwrk.app
         
         public int Run()
         {
-            _log.Info("run start");
+            _log.Info($"run start, {WorkerCount} workers");
             if (Reader == null)
             {
                 _log.Error("reader can't be null");
@@ -83,7 +83,7 @@ namespace nwrk.app
                             if (c >= 1000)
                             {
                                 c = 0;
-                                _log.Debug($"1000 task added, total:{count}");
+                                _log.Debug($"{count} records processed");
                             }
                         }
                     }
@@ -91,7 +91,7 @@ namespace nwrk.app
                 task.Start();
                 tasks.Add(task);
             }
-            _log.Debug($"tasks add completed, total:{tasks.Count}, wait to exit");
+            _log.Debug($"{tasks.Count} tasks add completed, wait to exit");
             tasks.ForEach(p => p.Join());
             _log.Debug($"run end");
             NWrkMonitor.End();
