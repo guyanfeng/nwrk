@@ -2,7 +2,7 @@
 
 namespace nwrk.app
 {
-    public interface INWrkReader : IDisposable
+    public interface INWrkReader : IDisposable, IAppSetting
     {   
         public string[] ReadLine();
     }

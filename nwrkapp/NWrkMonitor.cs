@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace nwrk.app
 {
@@ -39,6 +40,11 @@ namespace nwrk.app
         public void End()
         {
             _end = DateTime.Now;
+        }
+
+        public void ReadConfig(IConfigurationSection section)
+        {
+            
         }
 
         public string Report()
@@ -103,6 +109,11 @@ namespace nwrk.app
         {
             _begin = DateTime.Now;
         }
+
+        public override string ToString()
+        {
+            return $"normal monitor";
+        }
     }
 
     public class RowStatus
@@ -113,5 +124,6 @@ namespace nwrk.app
         public DateTime End { get; set; }
         public TimeSpan Elapsed { get; set; }
         public bool IsSuccess { get; set; }
+        public int Size { get; set; }
     }
 }

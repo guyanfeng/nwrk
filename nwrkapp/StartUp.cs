@@ -12,7 +12,7 @@ namespace nwrk.app
 
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<AppSettings>(Configuration.GetSection(nameof(AppSettings)));
+        
         }
     }
 }

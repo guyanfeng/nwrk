@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace nwrk.app
 {
@@ -20,13 +21,29 @@ namespace nwrk.app
 
         object _lockWrite = new object();
 
-        public NWrkCsvWriter(string path)
+        string _path;
+
+        public NWrkCsvWriter()
         {
-            var conf = new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture);
-            _writer = new CsvWriter(new StreamWriter(path, false, System.Text.Encoding.UTF8), conf);
             _buffer = new ConcurrentStack<string[]>();
-            //_writeBufferTask = new Task(WriteBufferTask);
-            //_writeBufferTask.Start();
+        }
+
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                if (_path != value)
+                {
+                    _writer?.Dispose();
+                    var conf = new CsvHelper.Configuration.CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture);
+                    _writer = new CsvWriter(new StreamWriter(value, false, System.Text.Encoding.UTF8), conf);
+                    _path = value;
+                }
+            }
         }
 
         public int WriteLine(string[] record)
@@ -66,6 +83,16 @@ namespace nwrk.app
             _isDisposed = true;
             
             _writer?.Dispose();
+        }
+
+        public void ReadConfig(IConfigurationSection section)
+        {
+            Path = section["path"];
+        }
+
+        public override string ToString()
+        {
+            return $"csv writer, path:{Path}";
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace nwrk.app
 {
@@ -74,6 +75,17 @@ namespace nwrk.app
             var content = await response.Content.ReadAsStringAsync();
             var repRecord = ParseResponse(record, content);
             return repRecord;
+        }
+
+        public override void ReadConfig(IConfigurationSection section)
+        {
+            base.ReadConfig(section);
+
+            BaseUrl = new Uri(section["baseUrl"]);
+
+            RelUrl = section["relUrl"];
+
+            Method = section["method"];
         }
     }
 }

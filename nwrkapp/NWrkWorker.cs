@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Threading;
+using Microsoft.Extensions.Configuration;
 
 namespace nwrk.app
 {
-    public interface INWrkWorker: IDisposable
+    public interface INWrkWorker: IDisposable, IAppSetting
     {
         public int Run();
     }
@@ -20,6 +21,11 @@ namespace nwrk.app
         public INWrkMonitor NWrkMonitor { get; set; } = new NWrkMonitor();
         public int WorkerCount { get; set; } = 50;
 
+        public NWrkWorker()
+        {
+
+        }
+
         protected abstract Task<string[]> ExecuteReader(string[] record);
 
         protected virtual void OnExecuteError(string[] input, Exception ex)
@@ -29,7 +35,6 @@ namespace nwrk.app
         
         public int Run()
         {
-            _log.Info($"run start, {WorkerCount} workers");
             if (Reader == null)
             {
                 _log.Error("reader can't be null");
@@ -47,6 +52,7 @@ namespace nwrk.app
                 throw new ArgumentOutOfRangeException(nameof(WorkerCount));
             }
 
+            _log.Info($"run start, reader:{Reader}, writer:{Writer}, monitor:{NWrkMonitor}, workers:{WorkerCount}");
             var c = 0;
             object lockTmp = new object();
             var tasks = new List<Thread>();
@@ -106,6 +112,15 @@ namespace nwrk.app
         {
             Reader?.Dispose();
             Writer?.Dispose();
+        }
+
+        public virtual void ReadConfig(IConfigurationSection section)
+        {
+            if (!int.TryParse(section["workerCount"], out int count))
+            {
+                count = 50;
+            }
+            WorkerCount = count;
         }
     }
 }

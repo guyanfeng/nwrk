@@ -5,7 +5,7 @@
 
 nwrk 主要由 **Reader**、**Writer**、**Worker** 和**Monitor** 四个组件组成。
 
-从 reader 中一行一行读取数据，通过 worker 进行处理，最后用 writer 写入测试结果，在这个过程中 monitor 进行一些基础的统计工作。
+从 reader 中逐行读取数据，通过 worker 进行处理，最后用 writer 写入测试结果，在这个过程中 monitor 进行一些基础的统计工作。
 
 
 
@@ -22,7 +22,7 @@ nwrk 主要由 **Reader**、**Writer**、**Worker** 和**Monitor** 四个组件�
 
 系统内置了一个 **NWrkCsvReader** 读取器， 可以从 csv 文件中读取数据。
 
-注：读取器必须是***线程安全***的
+注：读取器必须是***线程安全***的，保留默认构造函数
 
 
 
@@ -43,7 +43,7 @@ nwrk 主要由 **Reader**、**Writer**、**Worker** 和**Monitor** 四个组件�
 
 一个 **NWrkDBWriter** 写入器，可以将结果写入到数据库中，支持 **PostgreSql**、**MySql**、**SqlServer**等常用库
 
-注：写入器必须是***线程安全***的
+注：写入器必须是***线程安全***的，保留默认构造函数
 
 
 

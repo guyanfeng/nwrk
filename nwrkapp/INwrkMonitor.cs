@@ -1,7 +1,7 @@
 ﻿using System;
 namespace nwrk.app
 {
-    public interface INWrkMonitor
+    public interface INWrkMonitor : IAppSetting
     {
         public string RequestBegin(string[] input);
         public void RequestSuccess(string rowKey);
