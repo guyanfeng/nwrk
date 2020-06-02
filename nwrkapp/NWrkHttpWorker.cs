@@ -4,12 +4,22 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace nwrk.app
 {
-    public abstract class NWrkHttpWorker : NWrkWorker
+    public class NWrkHttpWorker : NWrkWorker
     {
         protected readonly HttpClient _http;
+        protected Regex _reg_data = new Regex("{(\\d+)}", RegexOptions.Compiled);
+
+        public string ContentType { get; set; }
+
+        /// <summary>
+        /// 数据模版
+        /// </summary>
+        public string Data { get; set; }
 
         /// <summary>
         /// 根 url
@@ -34,7 +44,12 @@ namespace nwrk.app
         /// </summary>
         public HttpContent PostContent { get; set; }
 
-        protected abstract string[] ParseResponse(string[] input, string content);
+        protected virtual string[] ParseResponse(string[] input, string content)
+        {
+            var list = new List<string>(input);
+            list.Add(content);
+            return list.ToArray();
+        }
 
         public string Method
         {
@@ -49,12 +64,25 @@ namespace nwrk.app
 
         protected virtual HttpContent CreateHttpContent(string[] record)
         {
-            return null;
+            var text = CreateData(record);
+            var content = new StringContent(text, Encoding.UTF8, ContentType);
+            return content;
         }
 
         protected virtual string CreateParams(string[] record)
         {
-            return null;
+            return "?" + CreateData(record);
+        }
+
+        string CreateData(string[] record)
+        {
+            var data = Data;
+            foreach (Match m in _reg_data.Matches(Data))
+            {
+                var index = Convert.ToInt32(m.Groups[1].Value);
+                data = data.Replace($"{{{index}}}", record[index]);
+            }
+            return data;
         }
             
         protected override async Task<string[]> ExecuteReader(string[] record)
@@ -86,6 +114,10 @@ namespace nwrk.app
             RelUrl = section["relUrl"];
 
             Method = section["method"];
+
+            Data = section["data"];
+
+            ContentType = section["contentType"];
         }
     }
 }

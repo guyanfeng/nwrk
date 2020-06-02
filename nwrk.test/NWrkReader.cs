@@ -1,5 +1,7 @@
 using NUnit.Framework;
 using System.IO;
+using System.Net.Http;
+using System;
 
 namespace nwrk.test
 {
@@ -14,7 +16,18 @@ namespace nwrk.test
         [Test]
         public void Read()
         {
-            using app.NWrkCsvReader reader = new app.NWrkCsvReader(_path);
+            var http = new HttpClient();
+            http.Timeout = System.TimeSpan.FromMilliseconds(1);
+            try
+            {
+                var a = http.GetAsync("http://www.google.com").Result;
+            }
+            catch (System.Exception ex)
+            {
+                Console.WriteLine(ex.GetBaseException().Message);
+            }
+            
+            /*using app.NWrkCsvReader reader = new app.NWrkCsvReader(_path);
             var line = 0;
             while (reader.Read())
             {
@@ -22,7 +35,7 @@ namespace nwrk.test
                 var record = reader.Record;
                 line++;
             }
-            Assert.AreEqual(File.ReadAllLines(_path).Length, line);
+            Assert.AreEqual(File.ReadAllLines(_path).Length, line);*/
         }
 
         public void generate()

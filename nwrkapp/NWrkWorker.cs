@@ -32,6 +32,16 @@ namespace nwrk.app
         {
             Console.WriteLine($"OnExecuteError:{ex.GetBaseException().Message}");
         }
+
+        protected virtual bool OnRecordExecuted(string[] input, int count)
+        {
+            if (count >= 1000)
+            {
+                _log.Info($"{count} records processed");
+                return true;
+            }
+            return false;
+        }
         
         public int Run()
         {
@@ -86,10 +96,9 @@ namespace nwrk.app
                         {
                             c++;
                             count++;
-                            if (c >= 1000)
+                            if (OnRecordExecuted(record, c))
                             {
                                 c = 0;
-                                _log.Debug($"{count} records processed");
                             }
                         }
                     }
