@@ -71,7 +71,7 @@ namespace nwrk.app
             _buffer.Clear();
             for (int i = 0; i < FieldLength; i++)
             {
-                _buffer.Append((char)('A' + _rand.Next(26)));
+                _buffer.Append((char)('a' + _rand.Next(26)));
             }
             return _buffer.ToString();
         }

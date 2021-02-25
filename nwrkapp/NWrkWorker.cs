@@ -52,7 +52,7 @@ namespace nwrk.app
             }
             if (Writer == null)
             {
-                _log.Error("reader can't be null");
+                _log.Error("writer can't be null");
                 throw new NullReferenceException("writer can't be null");
             }
 
@@ -117,7 +117,7 @@ namespace nwrk.app
             return 1;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             Reader?.Dispose();
             Writer?.Dispose();
